@@ -27,6 +27,8 @@ class VkApi:
         }
         response = requests.get(utils_url, params=utils_params)
         response_json = response.json()
+        if len(response_json['response']) == 0:
+            raise ValueError(f'Имя пользователя "{screen_name}" не существует.')
         return response_json['response']['object_id']
 
     @staticmethod
