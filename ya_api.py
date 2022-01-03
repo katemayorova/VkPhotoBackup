@@ -1,10 +1,12 @@
 import requests
 from progress.bar import Bar
+from upload_log import UploadLog
 
 
 class YaApi:
     def __init__(self, token: str):
         self.token = token
+        self.upload_log = UploadLog()
 
     def get_and_upload(self, dir_name, parsed_files):
         self.__create_directory_if_not_exist(dir_name)
@@ -13,8 +15,10 @@ class YaApi:
             url = parsed_files[file_name]
             file_bytes = self.__download(url)
             self.__upload(dir_name, file_name, file_bytes)
+            self.upload_log.append(file_name, len(file_bytes))
             bar.next()
         bar.finish()
+        print(self.upload_log.dump_json())
 
     @staticmethod
     def __download(url):
